@@ -1,6 +1,6 @@
 from math import log
 
-import v1.basic_laser as ls
+import versions.basic_laser as ls
 from res import params
 from res.params import default_laser_params, A, a
 from res.params import stable_off_initial_condition as off
@@ -8,7 +8,6 @@ from res.params import stable_on_initial_condition as on
 from res.params import unstable_initial_condition as alternate
 from res.solvers import solve_t, improved_euler
 from res.visual import plot_solution
-
 
 global make_gif
 global phase_space
@@ -51,3 +50,6 @@ def run_tests(phasespace=False, makegif=False):
     laser_off()
     laser_alternate()
     laser_on()
+
+
+run_tests(True, False)

@@ -1,28 +1,28 @@
 import math
-from random import gauss
 
-from numpy import multiply
+from numpy import multiply, sqrt
+from numpy.random import normal
 
-from res.params import default_laser_params, epsilon, gamma, sigma
+from res import params
 
 
 class single_node_noise_laser:
 
-    def __init__(self, s0, d, params=None):
+    def __init__(self, s0, d, args=None):
         self.s = s0  # initial state
         self.d = d  # laser pump current (lasing threshold)
 
-        if params is None:
-            self.params = default_laser_params
+        if args is None:
+            self.params = params.default_laser_params
         else:
-            self.params = params
+            self.params = args
 
         self.k = self.params["k"]  # laser parameters
         self.A = self.params["A"]
         self.a = self.params["a"]
         self.h = self.params["h"]
 
-        self.noise = lambda: multiply(sigma, [gauss(0, .75), 0, 0])
+        self.noise = lambda: multiply(params.sigma, [normal(0, sqrt(params.dt)), 0, 0])
 
     def x(self) -> complex:
         return abs(self.s[0]) ** 2
@@ -35,10 +35,10 @@ class single_node_noise_laser:
 
     def y_dot(self) -> complex:
         xy = self.x() * self.s[1]
-        return gamma * (self.d - self.s[1] + self.k * (self.s[2] + self.gx()) - xy)
+        return params.gamma * (self.d - self.s[1] + self.k * (self.s[2] + self.gx()) - xy)
 
     def w_dot(self) -> complex:
-        return -epsilon * (self.s[2] + self.gx())
+        return -params.epsilon * (self.s[2] + self.gx())
 
     # Error ######################################################################
 
@@ -56,7 +56,7 @@ class single_node_noise_laser:
             return [abs(self.s[0]) ** 2, s[1], s[2]]
         return [self.x(), self.s[1], self.s[2]]
 
-    def apply(self, s=None) -> list[complex | float]:
+    def apply(self, s=None, t=None) -> list[complex | float]:
         self.set(s)
         return [self.e_dot(), self.y_dot(), self.w_dot()]
 

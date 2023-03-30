@@ -1,0 +1,94 @@
+from numpy import sort, sqrt, multiply, empty, log, concatenate
+from numpy.random import normal
+
+import res.params as args
+from res.params import dt
+
+
+def noise(n):
+    return [multiply(args.sigma, [normal(0, sqrt(dt)), 0, 0]) for _ in range(n)]
+
+
+def P(t):
+    return args.p if args.t_range[0] <= t < args.t_range[1] else 0
+
+
+class laser_array:
+
+    def __init__(self, deltas):
+        self.deltas = sort(deltas)  # array deltas
+        self.n_iris = len(deltas)
+
+        self.s0 = empty(shape=(self.n_iris, 3))
+
+        for j in range(self.n_iris):
+            self.s0[j] = [args.default_laser_params['e0'], self.deltas[j], args.default_laser_params['w0']]
+
+        self.s = self.s0
+        self.x = self.X(self.s)
+
+    def X(self, s):
+        intensity_sum = 0
+
+        for i in range(self.n_iris):
+            intensity_sum += abs(s[i, 0]) ** 2
+
+        if args.method == 'mean_sum':
+            return intensity_sum / self.n_iris
+        elif args.method == 'sum':
+            return intensity_sum
+        pass
+
+    def gx(self, s, t):
+        self.x = self.X(s)
+        return args.A * log(1 + (args.a * (self.x + P(t))))
+
+    def apply(self, s, t):
+        # assert (len(set(s[:, 2])) == 1) & (len(s) == self.n_iris)
+        gx = self.gx(s, t)
+        w_dot = -args.epsilon * (s[0, 2] + gx)
+        s_dot = empty(shape=(self.n_iris, 3), dtype=complex)
+        for i in range(self.n_iris):
+            e, y, w = s[i]
+            x = abs(e) ** 2
+            xy = x * y
+            s_dot[i] = [
+                0.5 * complex(1, args.h) * e * (y - 1),
+                args.gamma * (self.deltas[i] - y + args.k * (w + gx) - xy),
+                w_dot
+            ]
+        return s_dot
+
+    def get_state(self, s) -> list[list[float]]:
+        return [[abs(s[i, 0]) ** 2, s[i, 1].real, s[i, 2].real] for i in range(self.n_iris)]
+
+    def set(self, s):
+        self.s = s
+
+
+class coupled_arrays:
+
+    def __init__(self, d1, d2):
+        self.p1 = laser_array(d1)
+        self.p2 = laser_array(d2)
+        self.n_iris = self.p1.n_iris + self.p2.n_iris
+        self.s0 = concatenate((self.p1.s, self.p2.s), axis=0)
+        self.s = self.s0
+        self.get_state = lambda s: [[abs(s[i, 0]) ** 2, s[i, 1].real, s[i, 2].real] for i in range(self.n_iris)]
+        self.p2.gx = lambda s, t: args.A*log(1+(args.a*((1-args.c)*self.p2.X(s)+(args.c*self.p1.x))))
+        self.noise = lambda: noise(self.n_iris)
+
+    def state0(self):
+        self.s = self.s0
+        self.p1.s = self.p1.s0
+        self.p2.s = self.p2.s0
+
+    def set(self, s):
+        self.s = s
+
+    def apply(self, s, t):
+        return concatenate(
+            (self.p1.apply(s[:self.p1.n_iris], t),
+             self.p2.apply(s[self.p1.n_iris:(self.p1.n_iris + self.p2.n_iris)], t)),
+            axis=0)
+

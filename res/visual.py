@@ -1,5 +1,6 @@
 from math import log
 from pathlib import Path
+from typing import Callable, Any
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -10,25 +11,11 @@ from res.params import A, a, k, tf, t0
 
 global show_xw
 global show_xyw
+global frames
 
-
-def print_solution(ts, solution):
-    for i in range(len(solution)):
-        print(f"t: {ts[i]}", f"s: {solution[i]}")
-
-
-def analyze(ts, solution):
-    print(solution[0, :])
-    sx = solution[:, 0]
-    sy = solution[:, 1]
-    return [
-        analyze_trajectory(ts, sx),
-        analyze_trajectory(ts, sy),
-    ]
-
-
-def analyze_trajectory(ts, trajectory):
-    pass
+globals().__setitem__('show_xw', True)
+globals().__setitem__('show_xyw', True)
+globals().__setitem__('frames', 100)
 
 
 def plot_solution(ts, solution, fixed_point, title=None, phase_space=False, makegif=False):
@@ -36,7 +23,7 @@ def plot_solution(ts, solution, fixed_point, title=None, phase_space=False, make
         if show_xyw:
             plot_dynamic_xyw_t(ts, solution, fixed_point, title)
         if show_xw:
-            plot_dynamic_x_w(ts, solution, fixed_point, title, phase_space, 200)
+            plot_dynamic_x_w(ts, solution, fixed_point, title, phase_space)
     else:
         if show_xyw:
             plot_static_xyw_t(ts, solution, fixed_point, title)
@@ -54,6 +41,7 @@ def plot_static_xyw_t(ts, solution, fixed_point, title=None, share_axes=True):
         plt.plot(ts, solution[:, 0], 'r')
         plt.plot(ts, solution[:, 1], 'g')
         plt.plot(ts, solution[:, 2], 'b')
+
         plt.xlabel("t")
     else:
         plt.subplot(1, 3, 1), plt.plot(ts, solution[:, 0], 'r'), plt.ylabel("x(t)"), plt.xlabel("t")
@@ -86,7 +74,7 @@ def plot_static_x_w(solution, fixed_point, title=None, phase_space=False):
         plt.show()
 
 
-def plot_dynamic_xyw_t(ts, solution, fixed_point, title=None, frames=200):
+def plot_dynamic_xyw_t(ts, solution, fixed_point, title=None):
     x1 = ts[0]
     x2 = ts[len(ts) - 1]
     t_span = round((x2 - x1) / frames)
@@ -112,7 +100,7 @@ def plot_dynamic_xyw_t(ts, solution, fixed_point, title=None, frames=200):
     l2, = plt.plot([], [], 'g')
     l3, = plt.plot([], [], 'b')
 
-    writer, output_file = make_writer(f"{title}_xyw_t")
+    writer, output_file = make_gif_writer(f"{title}_xyw_t")
 
     with writer.saving(fig, output_file, frames):
         t = t0
@@ -142,10 +130,11 @@ def plot_manifold(fixed_point, y_min, y_max):
     w = (1 - delta) / k
     plt.vlines(x=0, ymin=y_min, ymax=w, colors='r', linestyles='--')  # unstable off
     plt.vlines(x=0, ymin=w, ymax=y_max, colors='b')  # stable off
-    x_b = k * A - (1/a)
+    x_b = k * A - (1 / a)
     x_unstable = np.linspace(0, x_b, 100)
-    x_stable = np.linspace(x_b, x_b + 1.25, 100)
-    wx = lambda x: [(1 - delta - k*(A * log(1 + (a * xi))) + xi) / k for xi in x]
+    x_stable = np.linspace(x_b, x_b * 2.5, 100)
+    gx: Callable[[float], float] = lambda x: A * log(1 + (a * x))
+    wx: Callable[[Any], list[float | Any]] = lambda x: [((xi - delta + 1) / k) - gx(xi) for xi in x]
     plt.plot(x_unstable, wx(x_unstable), 'r--')
     plt.plot(x_stable, wx(x_stable), 'b')
 
@@ -153,7 +142,7 @@ def plot_manifold(fixed_point, y_min, y_max):
     plt.plot([x_b], wx([x_b]), marker="o", markersize=5, markeredgecolor="blue", markerfacecolor='black')
 
 
-def plot_dynamic_x_w(ts, solution, fixed_point, title=None, phase_space=True, frames=200):
+def plot_dynamic_x_w(ts, solution, fixed_point, title=None, phase_space=True):
     fig, ax = plt.subplots()
 
     x1 = ts[0]
@@ -179,7 +168,7 @@ def plot_dynamic_x_w(ts, solution, fixed_point, title=None, phase_space=True, fr
     l2 = plt.text(0.5, 0.5, 't = 0',
                   horizontalalignment='center', verticalalignment='top', transform=ax.transAxes)
 
-    writer, output_file = make_writer(f"{title}_x_w")
+    writer, output_file = make_gif_writer(f"{title}_x_w")
 
     with writer.saving(fig, output_file, frames):
         t = t0
@@ -202,7 +191,7 @@ def plot_dynamic_x_w(ts, solution, fixed_point, title=None, phase_space=True, fr
     plt.show()
 
 
-def make_writer(filename):
+def make_gif_writer(filename):
     writer = PillowWriter(fps=15)
     output_file = Path(f"../Thesis/gifs/1_{filename}.gif")
     output_file.parent.mkdir(exist_ok=True, parents=True)

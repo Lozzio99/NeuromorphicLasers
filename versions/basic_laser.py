@@ -1,4 +1,5 @@
 import math
+
 from res.params import default_laser_params, epsilon, gamma
 
 
@@ -39,7 +40,7 @@ class single_node_laser:
             return s
         return [self.s[0], self.s[1], self.s[2]]
 
-    def apply(self, s=None) -> list[float]:
+    def apply(self, s=None, t=None) -> list[float]:
         self.set(s)
         return [self.x_dot(), self.y_dot(), self.w_dot()]
 

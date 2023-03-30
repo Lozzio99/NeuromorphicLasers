@@ -1,6 +1,7 @@
 from random import uniform
-from res.solvers import solve_t, improved_euler
+
 from res.params import dt, gamma
+from res.solvers import solve_t, improved_euler
 from res.visual import plot_solution, analyze
 
 

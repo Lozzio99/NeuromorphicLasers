@@ -1,15 +1,14 @@
-import glob
 from math import log
 
-import v1.noise_laser as ls
+import versions.noise_laser as ls
 from res import params
+from res.analysis import analyse_solution
 from res.params import default_laser_params, A, a
-from res.params import noise_off_initial_condition as off
 from res.params import noise_alternate_initial_condition as alternate
+from res.params import noise_off_initial_condition as off
 from res.params import noise_on_initial_condition as on
 from res.solvers import solve_t, euler_mayurama
 from res.visual import plot_solution
-
 
 global make_gif
 global phase_space
@@ -19,6 +18,7 @@ def test_laser(s0, d, fixed_point, tit):
     test = ls.single_node_noise_laser(s0, d, default_laser_params)  # initialise laser
     ts, traj = solve_t(params.t0, params.tf, params.dt, test, euler_mayurama)  # create solution trajectory
     plot_solution(ts, traj, fixed_point, title=tit, phase_space=phase_space, makegif=make_gif)  # plot
+    analyse_solution(ts, traj)
     #   print_solution(ts, traj)                                         # print
 
 
