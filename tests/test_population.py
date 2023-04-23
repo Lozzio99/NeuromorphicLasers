@@ -3,22 +3,20 @@ from matplotlib import pyplot as plt
 
 import versions.laser_population as ls
 from res import params
-from res.params import default_laser_params as pms
 from res.solvers import solve_population, euler_mayurama
 from versions import laser_population
 
 
 def test_population():
-    params.tf = 5e4
-    pms['e0'] = 0
-    pms['w0'] = 0
-    pms['s'] = 1/(510 ** 2)
-    pms['p'] = 0.01
-    pms['a'] = 2
-    pms['t'] = [0, 1000]
-    deltas = [1.7, 1.5]
+    params.tf = 2e3
+    params.sigma = 0.001
+    params.p = 0.1
+    params.a = 2
+    params.t_range = [0, 20]
+    params.method = 'sum'
+    deltas = [0.995]
     # print(deltas)
-    test = ls.laser_array(deltas, args=pms)  # initialise laser
+    test = ls.laser_array(deltas, params.default_laser_params())  # initialise laser
     ts = np.arange(params.t0, params.tf, params.dt)
     traj = solve_population(ts, test, euler_mayurama)  # create solution trajectory
     plot(test, ts, traj, deltas)
@@ -27,8 +25,9 @@ def test_population():
 def plot(test, _ts, _traj, d):
     fig, (ax0, ax1) = plt.subplots(1, 2, dpi=300)
     mean_sum = np.sum(_traj[:, :, 0], axis=1) / test.n_iris
-    # mean_sum = _traj[:, :, 0]
-    ax0.plot(_ts, mean_sum, 'r'), ax0.set_title(laser_population.method)
+    _sum = np.sum(_traj[:, :, 0], axis=1)
+    ax0.plot(_ts, _sum if params.method == 'sum' else mean_sum, 'r')
+    ax0.set_title(params.method)
     ax0.set_ylabel("X"), ax0.set_xlabel("t")
     n = _traj.shape[1]
 

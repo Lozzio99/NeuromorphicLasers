@@ -21,23 +21,25 @@ t_range = [0, 1000]
 c = 0.5
 
 # method = 'sum'
-method = 'mean_sum'     # coupling method
+method = 'mean_sum'  # coupling method
 
 
-default_laser_params = {
-    "k": k,
-    "A": A,
-    "a": a,
-    "h": h,
-    "s": sigma,
-    "p": p,
-    "t": t_range,
-    "c": c,
-    "d": 0.995,
-    "e0": 0,
-    "y0": 0.995,
-    "w0": 0
-}
+def default_laser_params():
+    return {
+        "k": k,
+        "A": A,
+        "a": a,
+        "h": h,
+        "s": sigma,
+        "p": p,
+        "t": t_range,
+        "c": c,
+        "d": 0.995,
+        "e0": 0,
+        "y0": 0.995,
+        "w0": 0
+    }
+
 
 #
 #

@@ -20,11 +20,12 @@ class laser_array:
 
         self.noise = lambda: [multiply(self.sigma, [normal(0, sqrt(params.dt)), 0, 0]) for _ in range(self.n_iris)]
         self.P = lambda t: self.pulse if self.t_range[0] <= t < self.t_range[1] else 0
-        self.s = np.empty(shape=(self.n_iris, 3))
+        self.s0 = np.empty(shape=(self.n_iris, 3))
 
         for j in range(self.n_iris):
-            self.s[j] = [args['e0'], self.deltas[j], args['w0']]
+            self.s0[j] = [args['e0'], self.deltas[j], args['w0']]
 
+        self.s = self.s0
         self.x = self.X(self.s)
 
     def X(self, s):
@@ -43,7 +44,7 @@ class laser_array:
         return self.A * np.log(1 + (self.alpha * (self.x + self.P(t))))
 
     def apply(self, s, t):
-        assert (len(set(s[:, 2])) == 1) & (len(s) == self.n_iris)
+        # assert (len(set(s[:, 2])) == 1) & (len(s) == self.n_iris)
         gx = self.gx(s, t)
         w_dot = -params.epsilon * (s[0, 2] + gx)
         s_dot = np.empty(shape=(self.n_iris, 3), dtype=complex)

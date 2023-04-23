@@ -2,7 +2,7 @@ from math import log
 
 import versions.basic_laser as ls
 from res import params
-from res.params import default_laser_params, A, a
+from res.params import A, a
 from res.params import stable_off_initial_condition as off
 from res.params import stable_on_initial_condition as on
 from res.params import unstable_initial_condition as alternate
@@ -11,6 +11,8 @@ from res.visual import plot_solution
 
 global make_gif
 global phase_space
+
+default_laser_params = params.default_laser_params()
 
 
 def test_laser(s0, d, fixed_point, tit):

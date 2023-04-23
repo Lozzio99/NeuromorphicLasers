@@ -4,10 +4,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from res import params
-from res.params import default_laser_params as pms
 from res.solvers import euler_mayurama, solve_population
-# from versions.fast.laser_population_fast import coupled_arrays
-from versions.coupled_populations import coupled_arrays
+from versions.fast.laser_population_fast import coupled_arrays
 
 
 def plot(laser, _ts, t1, t2, deltas1, deltas2):
@@ -48,18 +46,18 @@ def plot(laser, _ts, t1, t2, deltas1, deltas2):
 
 
 def test_coupled():
-    params.tf = 5e3
-    pms['p'] = 0.01
-    pms['t'] = [0, 1000]
-    pms['c'] = 0.1
-    params.method = 'mean_sum'
+    params.tf = 2e3
+    params.c = 0.06
+    params.p = 0.1
+
+    # params.method = 'mean_sum'
     params.method = 'sum'
 
-    d1 = np.random.normal(0.999, 0.0001, size=10)
-    d2 = np.random.normal(0.200, 0.0001, size=1)
+    d1 = np.random.normal(0.925, 0.0001, size=3)
+    d2 = np.random.normal(0.400, 0.0001, size=1)
 
     st = datetime.now()
-    coupled = coupled_arrays(d1, d2, pms)
+    coupled = coupled_arrays(d1, d2)
     # coupled = coupled_arrays(d1, d2)
 
     ts = np.arange(params.t0, params.tf, params.dt)

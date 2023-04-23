@@ -1,18 +1,21 @@
 import math
 
-from res.params import default_laser_params, epsilon, gamma
+from res import params
+from res.params import epsilon, gamma
+
+default_laser_params = params.default_laser_params()
 
 
 class single_node_laser:
 
-    def __init__(self, s0, d, params=None):
+    def __init__(self, s0, d, args=None):
         self.s = s0  # initial state
         self.d = d  # laser pump current (lasing threshold)
 
-        if params is None:
+        if args is None:
             self.params = default_laser_params
         else:
-            self.params = params
+            self.params = args
 
         self.k = self.params["k"]  # laser parameters
         self.A = self.params["A"]

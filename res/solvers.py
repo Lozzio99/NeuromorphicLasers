@@ -116,23 +116,27 @@ def solve_coupled_until_spike(t0, tf, dt, laser, n1, method, spike_thresh):
     t1 = 0
     sz = len(ts)
     i = 1
+    p1_spiking = False
+
     while t < tf:
         if i % 1e5 == 0:
             print(f"Iteration {i}/{sz}")
 
         y1 = method(laser, t, dt)
-        if laser.p1.X(y1[:n1]) > spike_thresh:
-            t1 = t
+        if not p1_spiking:
+            if laser.p1.X(y1[:n1]) > spike_thresh:
+                t1 = t
+                p1_spiking = True
 
-        if laser.p2.X(y1[n1:]) > spike_thresh:
-            return t - t1, 1
+        if p1_spiking:
+            if laser.p2.X(y1[n1:]) > spike_thresh:
+                return t - t1, 1
 
-        else:
-            laser.set(y1)
-            t += dt
-            i += 1
+        laser.set(y1)
+        t += dt
+        i += 1
 
-    return t, 0
+    return t-t1 if p1_spiking else t, 0
 
 
 def solve_t(t0, tf, dt, laser, method):
