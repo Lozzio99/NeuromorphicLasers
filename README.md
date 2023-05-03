@@ -1,5 +1,6 @@
-# NeuromorphicLasers
-Laser simulation with analysis
+# Neuromorphic lasers
+Laser simulation with analysis \
+Thesis material 🌱
 
 |                                      |                                    |
 |:------------------------------------:|:----------------------------------:|
