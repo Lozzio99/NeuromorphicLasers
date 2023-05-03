@@ -13,7 +13,7 @@ class single_node_noise_laser:
         self.d = d  # laser pump current (lasing threshold)
 
         if args is None:
-            self.params = params.default_laser_params()
+            self.params = params.default_laser_params_OFF()
         else:
             self.params = args
 

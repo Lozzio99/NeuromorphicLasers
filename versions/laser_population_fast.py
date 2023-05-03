@@ -1,10 +1,10 @@
 from numpy import sort, sqrt, multiply, empty, log, concatenate
 from numpy.random import normal
 
-from res.params import dt
 from res import params
+from res.params import dt
 
-default_laser_params = params.default_laser_params()
+default_laser_params = params.default_laser_params_OFF()
 
 
 def noise(n):

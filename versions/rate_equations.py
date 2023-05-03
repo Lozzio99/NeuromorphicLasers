@@ -2,7 +2,7 @@ from random import uniform
 
 from res.params import dt, gamma
 from res.solvers import solve_t, improved_euler
-from res.visual import plot_solution, analyze
+from res.visual import plot_solution
 
 
 class laser:
@@ -32,7 +32,7 @@ initial_state = [uniform(0, 1), uniform(0, 1)]
 ls = laser(initial_state, delta_off)
 ts, traj = solve_t(0, 2500, dt, ls, improved_euler)
 plot_solution(ts, traj, [0, delta_off], 'Non-lasing fp (stable)')
-print(analyze(ts, traj))
+# print(analyze(ts, traj))
 #
 #
 #

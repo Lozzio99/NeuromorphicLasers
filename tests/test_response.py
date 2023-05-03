@@ -118,7 +118,7 @@ def test_n_lasers(n, p, ax):
 #
 
 params.tf = 5e3
-args = params.default_laser_params()
+args = params.default_laser_params_OFF()
 args['d'] = 0.995
 args['s'] = 0.001
 args['t'] = [0, 1e3]

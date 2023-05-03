@@ -18,12 +18,12 @@ globals().__setitem__('show_xyw', True)
 globals().__setitem__('frames', 100)
 
 
-def plot_solution(ts, solution, fixed_point, title=None, phase_space=False, makegif=False):
+def plot_solution(ts, solution, fixed_point, title=None, file_name=None, phase_space=False, makegif=False):
     if makegif:
         if show_xyw:
-            plot_dynamic_xyw_t(ts, solution, fixed_point, title)
+            plot_dynamic_xyw_t(ts, solution, fixed_point, title, file_name)
         if show_xw:
-            plot_dynamic_x_w(ts, solution, fixed_point, title, phase_space)
+            plot_dynamic_x_w(ts, solution, fixed_point, title, phase_space, file_name)
     else:
         if show_xyw:
             plot_static_xyw_t(ts, solution, fixed_point, title)
@@ -74,7 +74,7 @@ def plot_static_x_w(solution, fixed_point, title=None, phase_space=False):
         plt.show()
 
 
-def plot_dynamic_xyw_t(ts, solution, fixed_point, title=None):
+def plot_dynamic_xyw_t(ts, solution, fixed_point, title=None, file_name=None):
     x1 = ts[0]
     x2 = ts[len(ts) - 1]
     t_span = round((x2 - x1) / frames)
@@ -100,7 +100,7 @@ def plot_dynamic_xyw_t(ts, solution, fixed_point, title=None):
     l2, = plt.plot([], [], 'g')
     l3, = plt.plot([], [], 'b')
 
-    writer, output_file = make_gif_writer(f"{title}_xyw_t")
+    writer, output_file = make_gif_writer(f"{file_name}_xyw_t")
 
     with writer.saving(fig, output_file, frames):
         t = t0
@@ -130,7 +130,8 @@ def plot_manifold(fixed_point, y_min, y_max):
     w = (1 - delta) / k
     plt.vlines(x=0, ymin=y_min, ymax=w, colors='r', linestyles='--')  # unstable off
     plt.vlines(x=0, ymin=w, ymax=y_max, colors='b')  # stable off
-    x_b = k * A - (1 / a)
+    # x_b = k * A - (1 / a)
+    x_b = fixed_point[0]
     x_unstable = np.linspace(0, x_b, 100)
     x_stable = np.linspace(x_b, x_b * 2.5, 100)
     gx: Callable[[float], float] = lambda x: A * log(1 + (a * x))
@@ -142,7 +143,7 @@ def plot_manifold(fixed_point, y_min, y_max):
     plt.plot([x_b], wx([x_b]), marker="o", markersize=5, markeredgecolor="blue", markerfacecolor='black')
 
 
-def plot_dynamic_x_w(ts, solution, fixed_point, title=None, phase_space=True):
+def plot_dynamic_x_w(ts, solution, fixed_point, title=None, phase_space=True, file_name=None):
     fig, ax = plt.subplots()
 
     x1 = ts[0]
@@ -168,7 +169,7 @@ def plot_dynamic_x_w(ts, solution, fixed_point, title=None, phase_space=True):
     l2 = plt.text(0.5, 0.5, 't = 0',
                   horizontalalignment='center', verticalalignment='top', transform=ax.transAxes)
 
-    writer, output_file = make_gif_writer(f"{title}_x_w")
+    writer, output_file = make_gif_writer(f"{file_name}_x_w")
 
     with writer.saving(fig, output_file, frames):
         t = t0
@@ -193,7 +194,7 @@ def plot_dynamic_x_w(ts, solution, fixed_point, title=None, phase_space=True):
 
 def make_gif_writer(filename):
     writer = PillowWriter(fps=15)
-    output_file = Path(f"../Thesis/gifs/1_{filename}.gif")
+    output_file = Path(f"../gifs/{filename}.gif")
     output_file.parent.mkdir(exist_ok=True, parents=True)
 
     print(f"Creating gif file in: {output_file.absolute()}")

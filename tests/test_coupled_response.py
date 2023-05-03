@@ -1,14 +1,13 @@
 from datetime import datetime
 
 import numpy as np
-from matplotlib import pyplot as plt
 from matplotlib import cm
-from matplotlib.colors import LightSource
+from matplotlib import pyplot as plt
 from numpy.random import normal
-import multiprocessing as mp
+
 from res import params
 from res.solvers import solve_coupled_until_spike, euler_mayurama
-from versions.fast.laser_population_fast import coupled_arrays
+from versions.laser_population_fast import coupled_arrays
 
 
 def run_test(test, delta2, c):

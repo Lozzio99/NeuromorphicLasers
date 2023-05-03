@@ -1,6 +1,6 @@
-# timescale variables
 import random
 
+# timescale variables
 gamma = 0.004
 epsilon = 0.0001
 
@@ -14,17 +14,35 @@ k = 0.7
 A = 1 / k
 a = 2
 h = 4
+
+# noise
 sigma = 1 / (-510 ** 2)
 
+# pulse
 p = 0.01
-t_range = [0, 1000]
+t_range = [0, 500]
+
+# coupling
 c = 0.5
 
 # method = 'sum'
 method = 'mean_sum'  # coupling method
 
+# deltas
+d_off = 0.995
+d_alternate = 1.4
+d_on = 1.55
 
-def default_laser_params():
+# initial condition
+e0_off = 0
+e0_on = d_on - 1
+y0_off = d_off
+y0_on = 1
+w0_off = (1 - d_off) / k
+w0_on = (1 - d_on) / k
+
+
+def default_laser_params_OFF():
     return {
         "k": k,
         "A": A,
@@ -34,10 +52,27 @@ def default_laser_params():
         "p": p,
         "t": t_range,
         "c": c,
-        "d": 0.995,
-        "e0": 0,
-        "y0": 0.995,
-        "w0": 0
+        "d": d_off,
+        "e0": e0_off,
+        "y0": y0_off,
+        "w0": w0_off
+    }
+
+
+def default_laser_params_ON():
+    return {
+        "k": k,
+        "A": A,
+        "a": a,
+        "h": h,
+        "s": sigma,
+        "p": p,
+        "t": t_range,
+        "c": c,
+        "d": d_on,
+        "e0": e0_on,
+        "y0": y0_on,
+        "w0": w0_on
     }
 
 
@@ -69,7 +104,6 @@ def default_laser_params():
 # Stable for d<1
 # Attracting for w<(1-d)/k
 #
-d_off = 1 - 1e-6
 stable_off_initial_condition = {
     "d": d_off,
     "x0": 0,
@@ -82,6 +116,7 @@ noise_off_initial_condition = {
     "e0": 1e-6,
     "y0": d_off,
     "w0": random.uniform(0, (1 - d_off) / k),
+    # "w0": (1 - d_off) / k,
 }
 
 pulse_off_initial_condition = {
@@ -104,13 +139,13 @@ pulse_off_initial_condition = {
 # ALTERNATE BRANCH
 # Unstable for 1 < d < 1.5136
 #
-d_alternate = 1.3
 unstable_initial_condition = {
     "d": d_alternate,
     "x0": 1e-6,
     "y0": 0,
     "w0": (1 - d_alternate) / k
 }
+
 noise_alternate_initial_condition = {
     "d": d_alternate,
     "e0": 1e-6,
@@ -126,7 +161,7 @@ noise_alternate_initial_condition = {
 # Stable for d > 1.5136
 # Attracting for x>kA-(1/a)
 #
-d_on = 1.6
+
 stable_on_initial_condition = {
     "d": d_on,
     "x0": d_on - 1,
@@ -140,5 +175,3 @@ noise_on_initial_condition = {
     "y0": 1,
     "w0": (1 - d_on) / k
 }
-
-# pulse params

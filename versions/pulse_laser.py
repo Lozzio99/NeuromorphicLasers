@@ -4,12 +4,16 @@ from numpy import multiply, sqrt
 from numpy.random import normal
 
 from res import params
+from res.params import default_laser_params_OFF
 
 
 class single_node_pulse_laser:
 
     def __init__(self, s0, args=None):
         self.s = s0  # initial state
+
+        if args is None:
+            args = default_laser_params_OFF()
 
         self.k = args["k"]  # laser parameters
         self.A = args["A"]  # A logarithmic

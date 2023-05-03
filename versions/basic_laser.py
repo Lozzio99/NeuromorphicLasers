@@ -3,7 +3,7 @@ import math
 from res import params
 from res.params import epsilon, gamma
 
-default_laser_params = params.default_laser_params()
+default_laser_params = params.default_laser_params_OFF()
 
 
 class single_node_laser:

@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt, cm
 
 from res import params, solvers
 from res.solvers import euler_mayurama
-from versions.fast.laser_population_fast import laser_array
+from versions.laser_population_fast import laser_array
 
 
 def run_test_3D():
