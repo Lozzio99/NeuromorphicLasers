@@ -1,5 +1,6 @@
 # NeuromorphicLasers
 Laser simulation with analysis
 
-
-![](https://github.com/Lozzio99/NeuromorphicLasers/blob/master/imgs/gifs/pulse/p_off_xyw_t.gif)
+|                                      |                                    |
+|:------------------------------------:|:----------------------------------:|
+ | ![](imgs/gifs/noise/d_alt_xyw_t.gif) | ![](imgs/gifs/noise/d_alt_x_w.gif) |
