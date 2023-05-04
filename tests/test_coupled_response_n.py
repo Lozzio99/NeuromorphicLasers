@@ -16,7 +16,7 @@ d1 = 0.995
 d2 = 0.975
 n_lasers = [1, 2, 5, 20]
 n_pulses = 1000
-c_range = np.arange(0.02, 0.08, 0.0025)
+p_range = np.arange(0.02, 0.08, 0.0025)
 
 
 def run_test():
@@ -47,7 +47,7 @@ def test_n_lasers(n, ax):
     response_rate = []
 
     # for all pulse strength values
-    for coupling_strength in c_range:
+    for coupling_strength in p_range:
         params.c = coupling_strength
         print(f' -> c : {coupling_strength}')
         sum_response_time = 0
@@ -70,8 +70,8 @@ def test_n_lasers(n, ax):
         average_response_time.append(sum_response_time / n_pulses)
         response_rate.append(response_sum / n_pulses)
 
-    ax[0].plot(c_range, response_rate, label=f'{n} {"laser" if n == 1 else "lasers"}')
-    ax[1].plot(c_range, average_response_time, label=f'{n} {"laser" if n == 1 else "lasers"}')
+    ax[0].plot(p_range, response_rate, label=f'{n} {"laser" if n == 1 else "lasers"}')
+    ax[1].plot(p_range, average_response_time, label=f'{n} {"laser" if n == 1 else "lasers"}')
 
     return response_rate, average_response_time
 

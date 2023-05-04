@@ -2,17 +2,8 @@ from numpy import sort, sqrt, multiply, empty, log, concatenate
 from numpy.random import normal
 
 from res import params
-from res.params import dt
 
 default_laser_params = params.default_laser_params_OFF()
-
-
-def noise(n):
-    return [multiply(params.sigma, [normal(0, sqrt(dt)), 0, 0]) for _ in range(n)]
-
-
-def P(t):
-    return params.p if params.t_range[0] <= t < params.t_range[1] else 0
 
 
 class laser_array:
@@ -21,11 +12,13 @@ class laser_array:
         self.deltas = sort(deltas)  # array deltas
         self.n_iris = len(deltas)
         self.noise = lambda: [multiply(params.sigma, [normal(0, sqrt(params.dt)), 0, 0]) for _ in range(self.n_iris)]
-        self.s0 = empty(shape=(self.n_iris, 3))
+        self.P = lambda t: params.p if params.t_range[0] <= t < params.t_range[1] else 0
 
+        self.s0 = empty(shape=(self.n_iris, 3))
         for j in range(self.n_iris):
             self.s0[j] = [default_laser_params['e0'], self.deltas[j], default_laser_params['w0']]
 
+        self.state0 = lambda: setattr(self, 's', self.s0)
         self.s = self.s0
         self.x = self.X(self.s)
 
@@ -43,7 +36,7 @@ class laser_array:
 
     def gx(self, s, t):
         self.x = self.X(s)
-        return params.A * log(1 + (params.a * (self.x + P(t))))
+        return params.A * log(1 + (params.a * (self.x + self.P(t))))
 
     def apply(self, s, t):
         # assert (len(set(s[:, 2])) == 1) & (len(s) == self.n_iris)
@@ -82,8 +75,8 @@ class coupled_arrays:
 
     def state0(self):
         self.s = self.s0
-        self.p1.s = self.p1.s0
-        self.p2.s = self.p2.s0
+        self.p1.state0()
+        self.p2.state0()
         return self
 
     def set(self, s):

@@ -110,6 +110,36 @@ def solve_population_until_spike(t0, tf, dt, laser, method, spike_thresh):
     return t, 0
 
 
+def solve_until_individual_spikes(t0, tf, dt, laser, method, spike_thresh):
+    ts = np.arange(t0, tf, dt)
+    t = t0
+    sz = len(ts)
+    i = 1
+
+    individual_times = np.full(laser.n_iris, t0)
+    individual_responses = np.full(laser.n_iris, 0)
+
+    while t < tf:
+        if i % 1e5 == 0:
+            print(f"Iteration {i}/{sz}")
+
+        y1 = method(laser, t, dt)
+
+        for ls in range(laser.n_iris):
+            if abs(y1[ls, 0]) ** 2 > spike_thresh[ls]:
+                individual_times[ls] = t
+                individual_responses[ls] = 1
+
+        if all(individual_responses):
+            return individual_times, individual_responses
+        else:
+            laser.set(y1)
+            t += dt
+            i += 1
+
+    return individual_times, individual_responses
+
+
 def solve_coupled_until_spike(t0, tf, dt, laser, n1, method, spike_thresh):
     ts = np.arange(t0, tf, dt)
     t = t0
