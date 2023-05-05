@@ -116,7 +116,7 @@ def solve_until_individual_spikes(t0, tf, dt, laser, method, spike_thresh):
     sz = len(ts)
     i = 1
 
-    individual_times = np.full(laser.n_iris, t0)
+    individual_times = np.full(laser.n_iris, tf)
     individual_responses = np.full(laser.n_iris, 0)
 
     while t < tf:
