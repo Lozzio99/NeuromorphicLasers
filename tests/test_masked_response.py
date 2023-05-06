@@ -80,8 +80,9 @@ def test_pulse_masked(d1, d2, mask, ax):
 
 
 params.tf = 1.5e3
-d1_range = np.arange(0.65, 0.9, 0.1)
-d2_range = np.arange(0.75, 1.0, 0.1)
+d1_range = np.arange(0.55, 0.6, 0.1)
+d2_range = np.arange(0.65, 1.0, 0.1)
+print(d1_range, d2_range)
 n_pulses = 100
 params.t_range = [0, 500]
 p_range = np.arange(0, 1, 0.025)
