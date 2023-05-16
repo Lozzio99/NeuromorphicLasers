@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from res import params
-from res.solvers import solve_population, euler_mayurama
+from res.solvers import solve_population, euler_mayurama, time_sequence
 from versions.masked_population import masked_array
 
 
@@ -37,7 +37,7 @@ def test_population(mask):
 params.tf = 2000
 params.p = 0.5
 params.t_range = [0, 500]
-ts = np.arange(params.t0, params.tf, params.dt)
+ts = time_sequence(params.t0, params.tf, params.dt)
 deltas = [0.45, 0.95]
 params.method = "mean_sum"
 

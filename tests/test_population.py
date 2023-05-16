@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from res import params
-from res.solvers import solve_population, euler_mayurama
+from res.solvers import solve_population, euler_mayurama, time_sequence
 from versions import laser_population_fast as ls
 
 
@@ -17,7 +17,7 @@ def test_population():
     # deltas = [0.995, 1.5]
     print(deltas)
     test = ls.laser_array(deltas)  # initialise laser
-    ts = np.arange(params.t0, params.tf, params.dt)
+    ts = time_sequence(params.t0, params.tf, params.dt)
     traj = solve_population(ts, test, euler_mayurama)  # create solution trajectory
     plot(test, ts, traj, deltas)
 

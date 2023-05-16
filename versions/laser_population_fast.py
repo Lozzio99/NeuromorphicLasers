@@ -18,7 +18,6 @@ class laser_array:
         for j in range(self.n_iris):
             self.s0[j] = [default_laser_params['e0'], self.deltas[j], default_laser_params['w0']]
 
-        self.state0 = lambda: setattr(self, 's', self.s0)
         self.s = self.s0
         self.x = self.X(self.s)
 
@@ -59,6 +58,10 @@ class laser_array:
 
     def set(self, s):
         self.s = s
+
+    def state0(self):
+        self.s = self.s0
+        return self.s
 
 
 class coupled_arrays:

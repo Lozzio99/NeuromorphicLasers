@@ -10,7 +10,7 @@ def static_pulse(t):
 
 def dynamic_pulse(t):
     if params.t_range[0] <= t < params.t_range[1]:
-        return  params.p * (t - params.t_range[0]) / (params.t_range[1] - params.t_range[0])
+        return params.p * (t - params.t_range[0]) / (params.t_range[1] - params.t_range[0])
     return 0
 
 

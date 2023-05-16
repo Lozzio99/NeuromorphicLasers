@@ -1,0 +1,33 @@
+
+
+-   Dynamic pulse:
+        if t0 <= t < t1:
+            return p * (t - t0) / (t1 - t0)
+        else
+            return 0
+
+
+-   Static pulse:
+        if t0 <= t < t1:
+            return p
+        else
+            return 0
+
+- folders named by [delta1, delta2]
+
+
+- spiking threshold laser 1 : 1.0
+- spiking threshold laser 2 : 1.0
+
+- other parameters:
+    - t0 = 0
+    - dt = 0.1
+    - k = 0.7
+    - A = 1 / k
+    - a = 2
+    - h = 4
+    - sigma = 1 / (-510 ** 2)
+    - tf = 1.500
+    - pulse t0 = 0, pulse t1 = 500
+    - # samples (pulses) = 100 (unless couple exceptions 1000 pulses)
+    - p range *(from, to, step) = [0, 1, 0.001]

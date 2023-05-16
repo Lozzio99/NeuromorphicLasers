@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from res import params
-from res.solvers import euler_mayurama, solve_population
+from res.solvers import euler_mayurama, solve_population, time_sequence
 from versions.laser_population_fast import coupled_arrays
 
 
@@ -61,7 +61,7 @@ def test_coupled():
     st = datetime.now()
     coupled = coupled_arrays(d1, d2)
 
-    ts = np.arange(params.t0, params.tf, params.dt)
+    ts = time_sequence(params.t0, params.tf, params.dt)
 
     traj = solve_population(ts, coupled, euler_mayurama)
 

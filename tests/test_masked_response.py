@@ -79,17 +79,17 @@ def test_pulse_masked(d1, d2, mask, ax):
     ax[1].plot(p_range, average_response_time2, '--', label=r'$\delta_2 :$' + f"{d2:.2f}")
 
 
-params.tf = 1.5e3
-d1_range = np.arange(0.55, 0.6, 0.1)
-d2_range = np.arange(0.65, 1.0, 0.1)
+params.tf = 2e3
+d1_range = np.arange(0.45, 0.5, 0.1)
+d2_range = np.arange(0.95, 1.0, 0.1)
 print(d1_range, d2_range)
-n_pulses = 100
+n_pulses = 25
 params.t_range = [0, 500]
-p_range = np.arange(0, 1, 0.025)
+p_range = np.arange(0, 0.4, 0.001)
 
 masks = [
-    [0.5, 0.5],
-    [1, 0],
+    # [0.5, 0.5],
+    # [1, 0],
     [0, 1]
 ]
 

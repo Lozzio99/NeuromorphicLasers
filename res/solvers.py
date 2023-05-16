@@ -89,7 +89,7 @@ def solve_population(ts, population, method):
 
 
 def solve_population_until_spike(t0, tf, dt, laser, method, spike_thresh):
-    ts = np.arange(t0, tf, dt)
+    ts = time_sequence(t0, tf, dt)
     t = t0
     sz = len(ts)
     i = 1
@@ -111,7 +111,7 @@ def solve_population_until_spike(t0, tf, dt, laser, method, spike_thresh):
 
 
 def solve_until_individual_spikes(t0, tf, dt, laser, method, spike_thresh):
-    ts = np.arange(t0, tf, dt)
+    ts = time_sequence(t0, tf, dt)
     t = t0
     sz = len(ts)
     i = 1
@@ -141,7 +141,7 @@ def solve_until_individual_spikes(t0, tf, dt, laser, method, spike_thresh):
 
 
 def solve_coupled_until_spike(t0, tf, dt, laser, n1, method, spike_thresh):
-    ts = np.arange(t0, tf, dt)
+    ts = time_sequence(t0, tf, dt)
     t = t0
     t1 = 0
     sz = len(ts)
@@ -170,5 +170,9 @@ def solve_coupled_until_spike(t0, tf, dt, laser, n1, method, spike_thresh):
 
 
 def solve_t(t0, tf, dt, laser, method):
-    ts = np.arange(t0, tf, dt)
+    ts = time_sequence(t0, tf, dt)
     return ts, solve(ts, laser, method)
+
+
+def time_sequence(t0, tf, dt):
+    return np.arange(t0, tf, dt)
